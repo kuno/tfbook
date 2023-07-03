@@ -10,6 +10,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import tensorflow as tf
+import datetime
+
 data = tf.keras.datasets.fashion_mnist
 
 (training_images, training_labels), (test_images, test_labels) = data.load_data()
@@ -30,7 +32,9 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-model.fit(training_images, training_labels, epochs=20)
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+model.fit(training_images, training_labels, epochs=100, callbacks=[tensorboard_callback])
 
 model.evaluate(test_images, test_labels)
 
